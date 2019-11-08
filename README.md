@@ -1,8 +1,57 @@
-# Useful commands
+# example-cdk
 
- * `npm run build`   compile typescript to js
- * `npm run watch`   watch for changes and compile
- * `npm run test`    perform the jest unit tests
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
+AWS Cloud Development Kit Example
+
+## Getting Started
+
+- サンプルをdeployする
+
+### Prerequisites
+
+What things you need to install the software and how to install them
+
+node
+
+```shell
+nodenv install 12.12.0
+nodenv local 12.12.0
+npm install -g npm
+```
+
+cdk
+
+```shell
+npm install -g aws-cdk
+cdk --version
+```
+
+sam-cli
+
+```shell
+brew tap aws/tap
+brew install aws-sam-cli
+sam --version
+```
+
+
+### Installing
+
+set up repository
+
+```
+git clone https://github.com/taguchi-so/example-cdk.git
+cd example-cdk
+make setup
+```
+
+## Running the tests
+
+```shell
+make test
+```
+
+## Deployment
+
+```shell
+make deploy
+```
