@@ -2,8 +2,8 @@
 #===============================================================
 OS                   := $(shell uname | tr A-Z a-z )
 SHELL                := /bin/bash
-APP_ENV              := local
-
+APP_ENV              := dev
+REVISION             :=
 # Const
 #===============================================================
 name                 := example-cdk
@@ -13,23 +13,37 @@ stack_name           := ExampleCdkStack
 #===============================================================
 setup:
 	npm install
+fmt:
+	# TODO: addedc typescript formatter
+	# npm run fmt
 lint:
-	npm run lint
-test:
+	# TODO: addedc typescript linter
+	# npm run lint
+test: build
 	npm test
 build:
 	npm run build
 watch:
 	npm run watch
-deploy:
-	cdk deploy --require-approval never $(stack_name)
-diff:
-	cdk diff $(stack_name)
-destroy:
-	cdk destroy $(stack_name)
-release: test build
+
+diff:.check-env
+	cdk diff $(stack_name) --context env=$(APP_ENV) "$(stack_name)-$(APP_ENV)"
+deploy:.check-env .set-revision release
+	cdk deploy --require-approval never --context env=$(APP_ENV) --context revision=$(REVISION) "$(stack_name)-$(APP_ENV)"
+destroy:.check-env
+	cdk destroy --context env=$(APP_ENV) "$(stack_name)-$(APP_ENV)"
+
 # template:
 # 	cdk synth
-.PHONY: setup test build watch deploy diff
+release: lint fmt test build
+.PHONY: setup lint fmt test build watch deploy diff release
 .DEFAULT_GOAL := build
 
+.check-env:
+APP_ENVS := dev stg prd
+ifeq ($(filter $(APP_ENVS),$(APP_ENV)),)
+$(error "invalid APP_ENV=$(APP_ENV)")
+endif
+
+.set-revision:
+	$(eval REVISION := $(shell if [[ $$REV = "" ]]; then git rev-parse --short HEAD; else echo $$REV;fi;))

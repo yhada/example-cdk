@@ -57,6 +57,17 @@ make build
 
 ## Deployment
 
+deploy api-gateway and lamda
+
 ```shell
-make deploy
+make release # fmt lint test build
+make deploy APP_ENV=dev
 ```
+
+destroy api-gateway and lamda
+
+```shell
+make destory APP_ENV=dev
+```
+
+
