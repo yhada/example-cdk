@@ -1,7 +1,8 @@
 # Option
 #===============================================================
-OS            := $(shell uname | tr A-Z a-z )
-SHELL         := /bin/bash
+OS                   := $(shell uname | tr A-Z a-z )
+SHELL                := /bin/bash
+APP_ENV              := local
 
 # Const
 #===============================================================
@@ -12,19 +13,23 @@ stack_name           := ExampleCdkStack
 #===============================================================
 setup:
 	npm install
+lint:
+	npm run lint
+test:
+	npm test
 build:
 	npm run build
 watch:
 	npm run watch
 deploy:
-	cdk deploy $(stack_name)
+	cdk deploy --require-approval never $(stack_name)
 diff:
 	cdk diff $(stack_name)
 destroy:
 	cdk destroy $(stack_name)
-
+release: test build
 # template:
 # 	cdk synth
-.PHONY: build watch deploy diff
+.PHONY: setup test build watch deploy diff
 .DEFAULT_GOAL := build
 

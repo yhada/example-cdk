@@ -33,12 +33,11 @@ brew install aws-sam-cli
 sam --version
 ```
 
-
 ### Installing
 
 set up repository
 
-```
+```shell
 git clone https://github.com/taguchi-so/example-cdk.git
 cd example-cdk
 make setup
@@ -48,6 +47,12 @@ make setup
 
 ```shell
 make test
+```
+
+## Build
+
+```shell
+make build
 ```
 
 ## Deployment
