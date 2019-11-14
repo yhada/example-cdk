@@ -4,10 +4,13 @@ OS                   := $(shell uname | tr A-Z a-z )
 SHELL                := /bin/bash
 APP_ENV              := dev
 REVISION             :=
+BUILD_OPTIONS        := -tags netgo -installsuffix netgo
+
 # Const
 #===============================================================
 name                 := example-cdk
 stack_name           := ExampleCdkStack
+bin_dir							 := bin
 
 # Task
 #===============================================================
@@ -47,3 +50,4 @@ endif
 
 .set-revision:
 	$(eval REVISION := $(shell if [[ $$REV = "" ]]; then git rev-parse --short HEAD; else echo $$REV;fi;))
+
