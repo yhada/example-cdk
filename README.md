@@ -1,14 +1,12 @@
 # example-cdk
 
-AWS Cloud Development Kit Example
+AWS Cloud Development Kit Example for APIGateway + LambdaFunction
 
 ## Getting Started
 
-- サンプルをdeployする
+- apidateway + lambdaのサンプルをdeployする
 
 ### Prerequisites
-
-What things you need to install the software and how to install them
 
 node
 
@@ -55,19 +53,65 @@ make test
 make build
 ```
 
-## Deployment
+## Deployment(CDK)
 
-deploy api-gateway and lamda
+deploy api-gateway and lamda and a record
+
+- set environments
 
 ```shell
-make release # fmt lint test build
-make deploy APP_ENV=dev
+export CDK_DEFAULT_ACCOUNT="*****" \
+export CDK_DEFAULT_REGION="ap-northeast-1" \
 ```
 
-destroy api-gateway and lamda
+- edit cdk.json
+
+```json
+{
+  "context": {
+    "dev": {
+      "description": "Development Example-CDK",
+      "customDomainName": "hoge.dev.example.com",
+      "certificateArn": "arn:aws:acm:ap-northeast-1:999999999999:certificate/ffffffff-ffff-ffff-ffff-ffffffffffff",
+      "hostedZoneId": "XXXXXXXXXXXXXX"
+    },
+    "stg": {
+      "description": "Staging Example-CDK",
+      "customDomainName": "hoge.stg.example.com",
+      "certificateArn": "arn:aws:acm:ap-northeast-1:999999999999:certificate/ffffffff-ffff-ffff-ffff-ffffffffffff",
+      "hostedZoneId": "XXXXXXXXXXXXXX"
+    },
+    "prd": {
+      "description": "Product Example-CDK",
+      "customDomainName": "hoge.example.com",
+      "certificateArn": "arn:aws:acm:ap-northeast-1:999999999999:certificate/ffffffff-ffff-ffff-ffff-ffffffffffff",
+      "hostedZoneId": "XXXXXXXXXXXXXX"
+    }
+  },
+  "app": "npx ts-node bin/example-cdk.ts"
+}
+```
+
+destroy api-gateway and lamda and a record
+
+```shell
+make deploy APP_ENV=dev
+
+# check endpoint
+curl -i https://hoge.dev.example.com/v1/samples
+> ...
+
+# check resorce
+aws cloudformation describe-stacks | jq '.Stacks[] | select(.StackName=="ExampleCdkStack-dev")'
+aws lambda list-functions | jq '.Functions[] | select(.FunctionName=="ExampleCdkStack-dev-samplesLambda")'
+aws apigateway get-rest-apis | jq '.items[] | select(.name=="ExampleCdkStack-dev-RestApi")'
+aws apigateway get-domain-names| jq '.items[] | select(.domainName=="hoge.dev.example.com")'
+> ...
+
+```
+
+destroy api-gateway and lamda and a record
 
 ```shell
 make destory APP_ENV=dev
 ```
-
-

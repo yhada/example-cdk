@@ -29,23 +29,48 @@ build:
 watch:
 	npm run watch
 
-diff:.check-env
-	cdk diff $(stack_name) --context env=$(APP_ENV) "$(stack_name)-$(APP_ENV)"
-deploy:.check-env .set-revision release
-	cdk deploy --require-approval never --context env=$(APP_ENV) --context revision=$(REVISION) "$(stack_name)-$(APP_ENV)"
-destroy:.check-env
-	cdk destroy --context env=$(APP_ENV) "$(stack_name)-$(APP_ENV)"
+deploy: release cdk-deploy
+destroy: release cdk-destroy
+diff: release cdk-diff
 
-# template:
-# 	cdk synth
+# cdk tasks
+cdk-deploy:.check-env .set-revision
+	cdk deploy --require-approval never \
+		--context env=$(APP_ENV) \
+		--context revision=$(REVISION) \
+		"$(stack_name)-$(APP_ENV)"
+
+cdk-destroy:.check-env .set-revision
+	cdk destroy --require-approval never \
+		--context env=$(APP_ENV) \
+		--context revision=$(REVISION) \
+		"$(stack_name)-$(APP_ENV)"
+
+cdk-diff:.check-env .set-revision
+	cdk diff --context env=$(APP_ENV) \
+		--context revision=$(REVISION) \
+		"$(stack_name)-$(APP_ENV)"
+
+cdk-synth:.check-env .set-revision
+	cdk synth --context env=$(APP_ENV) \
+		--context revision=$(REVISION) \
+		"$(stack_name)-$(APP_ENV)"
+
 release: lint fmt test build
+
 .PHONY: setup lint fmt test build watch deploy diff release
-.DEFAULT_GOAL := build
+.DEFAULT_GOAL := release
 
 .check-env:
 APP_ENVS := dev stg prd
 ifeq ($(filter $(APP_ENVS),$(APP_ENV)),)
-$(error "invalid APP_ENV=$(APP_ENV)")
+	$(error "invalid APP_ENV=$(APP_ENV)")
+endif
+ifeq ($(CDK_DEFAULT_ACCOUNT),)
+	$(error "invalid CDK_DEFAULT_ACCOUNT=$(CDK_DEFAULT_ACCOUNT)")
+endif
+ifeq ($(CDK_DEFAULT_REGION),)
+	$(error "invalid CDK_DEFAULT_REGION=$(CDK_DEFAULT_REGION)")
 endif
 
 .set-revision:
