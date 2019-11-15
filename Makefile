@@ -5,6 +5,7 @@ SHELL                := /bin/bash
 APP_ENV              := dev
 REVISION             :=
 BUILD_OPTIONS        := -tags netgo -installsuffix netgo
+APP_ENVS             := dev stg prd
 
 # Const
 #===============================================================
@@ -12,10 +13,12 @@ name                 := example-cdk
 stack_name           := ExampleCdkStack
 bin_dir							 := bin
 
+
 # Task
 #===============================================================
 setup:
 	npm install
+
 fmt:
 	# TODO: addedc typescript formatter
 	# npm run fmt
@@ -61,8 +64,8 @@ release: lint fmt test build
 .PHONY: setup lint fmt test build watch deploy diff release
 .DEFAULT_GOAL := release
 
+# internal task
 .check-env:
-APP_ENVS := dev stg prd
 ifeq ($(filter $(APP_ENVS),$(APP_ENV)),)
 	$(error "invalid APP_ENV=$(APP_ENV)")
 endif
@@ -75,4 +78,3 @@ endif
 
 .set-revision:
 	$(eval REVISION := $(shell if [[ $$REV = "" ]]; then git rev-parse --short HEAD; else echo $$REV;fi;))
-
