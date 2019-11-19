@@ -4,19 +4,22 @@
       "description": "Development Example-CDK",
       "customDomainName": "",
       "certificateArn": "",
-      "hostedZoneId": ""
+      "hostedZoneId": "",
+      "bucketName": ""
     },
     "stg": {
       "description": "Staging Example-CDK",
       "customDomainName": "",
       "certificateArn": "",
-      "hostedZoneId": ""
+      "hostedZoneId": "",
+      "bucketName": ""
     },
     "prd": {
       "description": "Product Example-CDK",
       "customDomainName": "",
       "certificateArn": "",
-      "hostedZoneId": ""
+      "hostedZoneId": "",
+      "bucketName": ""
     }
   },
   "app": "npx ts-node bin/example-cdk.ts"

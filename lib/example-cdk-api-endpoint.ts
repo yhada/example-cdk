@@ -11,7 +11,7 @@ interface StageContext {
   hostedZoneId: string;
 }
 
-export class ExampleCdkStack extends cdk.Stack {
+export class ExampleCdkAPIEndpointStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 

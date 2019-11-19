@@ -6,12 +6,11 @@ APP_ENV              := dev
 REVISION             :=
 BUILD_OPTIONS        := -tags netgo -installsuffix netgo
 APP_ENVS             := dev stg prd
-
+STACK_NAME           := ExampleCdkStack
 # Const
 #===============================================================
 name                 := example-cdk
-stack_name           := ExampleCdkStack
-bin_dir							 := bin
+bin_dir              := bin
 
 
 # Task
@@ -37,27 +36,27 @@ destroy: release cdk-destroy
 diff: release cdk-diff
 
 # cdk tasks
-cdk-deploy:.check-env .set-revision
+cdk-deploy:.check-env .set-revision build
 	cdk deploy --require-approval never \
 		--context env=$(APP_ENV) \
 		--context revision=$(REVISION) \
-		"$(stack_name)-$(APP_ENV)"
+		"$(STACK_NAME)-$(APP_ENV)"
 
-cdk-destroy:.check-env .set-revision
+cdk-destroy:.check-env .set-revision build
 	cdk destroy --require-approval never \
 		--context env=$(APP_ENV) \
 		--context revision=$(REVISION) \
-		"$(stack_name)-$(APP_ENV)"
+		"$(STACK_NAME)-$(APP_ENV)"
 
-cdk-diff:.check-env .set-revision
+cdk-diff:.check-env .set-revision build
 	cdk diff --context env=$(APP_ENV) \
 		--context revision=$(REVISION) \
-		"$(stack_name)-$(APP_ENV)"
+		"$(STACK_NAME)-$(APP_ENV)"
 
-cdk-synth:.check-env .set-revision
+cdk-synth:.check-env .set-revision build
 	cdk synth --context env=$(APP_ENV) \
 		--context revision=$(REVISION) \
-		"$(stack_name)-$(APP_ENV)"
+		"$(STACK_NAME)-$(APP_ENV)"
 
 release: lint fmt test build
 
