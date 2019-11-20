@@ -4,9 +4,9 @@ OS                   := $(shell uname | tr A-Z a-z )
 SHELL                := /bin/bash
 APP_ENV              := dev
 REVISION             :=
-BUILD_OPTIONS        := -tags netgo -installsuffix netgo
 APP_ENVS             := dev stg prd
-STACK_NAME           := ExampleCdkStack
+STACK_NAME           := ExampleCdkAPIEndpointStack
+
 # Const
 #===============================================================
 name                 := example-cdk
@@ -15,40 +15,59 @@ bin_dir              := bin
 
 # Task
 #===============================================================
+
+## 必要なツール類をセットアップします
 setup:
+	go get github.com/Songmu/make2help/cmd/make2help
 	npm install
 
+## 全てのソースの整形を行います
 fmt:
-	# TODO: addedc typescript formatter
 	# npm run fmt
+	@echo "TODO: added typescript linter"
+
+## 全てのソースのLINTを実行します
 lint:
-	# TODO: addedc typescript linter
 	# npm run lint
+	@echo "TODO: added typescript linter"
+
+## 全てのユニットテストを実行します
 test: build
 	npm test
+
+## ビルドを実行します
 build:
 	npm run build
-watch:
-	npm run watch
 
-deploy: release cdk-deploy
-destroy: release cdk-destroy
-diff: release cdk-diff
+## デプロイを実行します
+deploy: build cdk-deploy
+
+## デプロイしたリソースを破棄します
+destroy: build cdk-destroy
+
+## デプロイしたものとの差分を表示します
+diff: build cdk-diff
+
+## デプロイ構成を表示します
+describe: build cdk-synth
+
+## リリース用のタスクを(lint fmt test build)を一連で行います
+release: lint fmt test build
 
 # cdk tasks
-cdk-deploy:.check-env .set-revision build
+cdk-deploy:.check-env .set-revision
 	cdk deploy --require-approval never \
 		--context env=$(APP_ENV) \
 		--context revision=$(REVISION) \
 		"$(STACK_NAME)-$(APP_ENV)"
 
-cdk-destroy:.check-env .set-revision build
+cdk-destroy:.check-env .set-revision
 	cdk destroy --require-approval never \
 		--context env=$(APP_ENV) \
 		--context revision=$(REVISION) \
 		"$(STACK_NAME)-$(APP_ENV)"
 
-cdk-diff:.check-env .set-revision build
+cdk-diff:.check-env .set-revision
 	cdk diff --context env=$(APP_ENV) \
 		--context revision=$(REVISION) \
 		"$(STACK_NAME)-$(APP_ENV)"
@@ -58,9 +77,14 @@ cdk-synth:.check-env .set-revision build
 		--context revision=$(REVISION) \
 		"$(STACK_NAME)-$(APP_ENV)"
 
-release: lint fmt test build
+npm-watch:
+	npm run watch
 
-.PHONY: setup lint fmt test build watch deploy diff release
+## ヘルプ
+help:
+	@make2help $(MAKEFILE_LIST)
+
+.PHONY: setup lint fmt test build watch deploy diff release help
 .DEFAULT_GOAL := release
 
 # internal task

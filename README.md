@@ -39,6 +39,7 @@ set up repository
 git clone https://github.com/taguchi-so/example-cdk.git
 cd example-cdk
 make setup
+make help
 ```
 
 ## Running the tests
@@ -73,19 +74,23 @@ export CDK_DEFAULT_REGION="ap-northeast-1" \
       "description": "Development Example-CDK",
       "customDomainName": "hoge.dev.example.com",
       "certificateArn": "arn:aws:acm:ap-northeast-1:999999999999:certificate/ffffffff-ffff-ffff-ffff-ffffffffffff",
-      "hostedZoneId": "XXXXXXXXXXXXXX"
+      "hostedZoneId": "XXXXXXXXXXXXXX",
+      "bucketName": "example.com-bucketName",
     },
     "stg": {
       "description": "Staging Example-CDK",
       "customDomainName": "hoge.stg.example.com",
       "certificateArn": "arn:aws:acm:ap-northeast-1:999999999999:certificate/ffffffff-ffff-ffff-ffff-ffffffffffff",
-      "hostedZoneId": "XXXXXXXXXXXXXX"
+      "hostedZoneId": "XXXXXXXXXXXXXX",
+      "bucketName": "example.com-bucketName",
+
     },
     "prd": {
       "description": "Product Example-CDK",
       "customDomainName": "hoge.example.com",
       "certificateArn": "arn:aws:acm:ap-northeast-1:999999999999:certificate/ffffffff-ffff-ffff-ffff-ffffffffffff",
-      "hostedZoneId": "XXXXXXXXXXXXXX"
+      "hostedZoneId": "XXXXXXXXXXXXXX",
+      "bucketName": "example.com-bucketName",
     }
   },
   "app": "npx ts-node bin/example-cdk.ts"
@@ -95,7 +100,10 @@ export CDK_DEFAULT_REGION="ap-northeast-1" \
 destroy api-gateway and lamda and a record
 
 ```shell
-make deploy APP_ENV=dev
+# apigateway + lambda + route53(a-record)
+make deploy APP_ENV=dev STACK_NAME=ExampleCdkAPIEndpointStack
+# lamda + cloudwatchevent + s3
+make deploy APP_ENV=dev STACK_NAME=ExampleCdkLambdaCronStack
 
 # check endpoint
 curl -i https://hoge.dev.example.com/v1/samples
@@ -113,5 +121,8 @@ aws apigateway get-domain-names| jq '.items[] | select(.domainName=="hoge.dev.ex
 destroy api-gateway and lamda and a record
 
 ```shell
-make destory APP_ENV=dev
+# apigateway + lambda + route53(a-record)
+make destory APP_ENV=dev STACK_NAME=ExampleCdkAPIEndpointStack
+# lamda + cloudwatchevent + s3
+make destory APP_ENV=dev STACK_NAME=ExampleCdkLambdaCronStack
 ```
