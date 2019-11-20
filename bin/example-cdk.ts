@@ -1,15 +1,31 @@
 #!/usr/bin/env node
 import "source-map-support/register";
-import cdk = require("@aws-cdk/core");
-import { ExampleCdkStack } from "../lib/example-cdk-stack";
+import * as cdk from "@aws-cdk/core";
+import { ExampleCdkAPIEndpointStack } from "../lib/example-cdk-api-endpoint";
+import { ExampleCdkLambdaCronStack } from "../lib/example-cdk-lamda-cron";
 
 // TODO: env,contextの整理
 const app = new cdk.App();
 const env: string = app.node.tryGetContext("env");
-console.log(`ExampleCdkStack-${env || "dev"}`);
-new ExampleCdkStack(app, `ExampleCdkStack-${env || "dev"}`, {
-  env: {
-    account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION
+
+new ExampleCdkAPIEndpointStack(
+  app,
+  `ExampleCdkAPIEndpointStack-${env || "dev"}`,
+  {
+    env: {
+      account: process.env.CDK_DEFAULT_ACCOUNT,
+      region: process.env.CDK_DEFAULT_REGION
+    }
   }
-});
+);
+
+new ExampleCdkLambdaCronStack(
+  app,
+  `ExampleCdkLambdaCronStack-${env || "dev"}`,
+  {
+    env: {
+      account: process.env.CDK_DEFAULT_ACCOUNT,
+      region: process.env.CDK_DEFAULT_REGION
+    }
+  }
+);
