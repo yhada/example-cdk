@@ -4,7 +4,7 @@ exports.handler = async (event: any, context: any) => {
   const logs = {
     revision: process.env.REVISION,
     event: 'survey',
-    queryParams: 'queryParams',
+    queryParams: event,
     isoDate: now.toISOString(),
     time: now.getTime()
   };

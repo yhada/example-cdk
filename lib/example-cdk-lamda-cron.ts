@@ -41,6 +41,12 @@ export class ExampleCdkLambdaCronStack extends cdk.Stack {
     getPolicyStatement.addServicePrincipal(`logs.${this.region}.amazonaws.com`);
     bucket.addToResourcePolicy(getPolicyStatement);
 
+    const getBucAclPolicyStatement = new iam.PolicyStatement();
+    getBucAclPolicyStatement.addActions("s3:GetBucketAcl");
+    getBucAclPolicyStatement.addResources(`arn:aws:s3:::${context.bucketName}`);
+    getBucAclPolicyStatement.addServicePrincipal(`logs.${this.region}.amazonaws.com`);
+    bucket.addToResourcePolicy(getBucAclPolicyStatement);
+
     const putPolicyStatement = new iam.PolicyStatement();
     putPolicyStatement.addActions("s3:PutObject");
     putPolicyStatement.addResources(`arn:aws:s3:::${context.bucketName}/*`);
@@ -52,7 +58,7 @@ export class ExampleCdkLambdaCronStack extends cdk.Stack {
 
     new lambda.Function(this, "hadaLambda", {
       code: lambda.Code.asset("src/lambda/sample"),
-      handler: "cron.handler",
+      handler: "index.handler",
       timeout: cdk.Duration.seconds(300),
       runtime: lambda.Runtime.NODEJS_10_X,
       environment: {
