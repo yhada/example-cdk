@@ -2,10 +2,10 @@ import * as cdk from "@aws-cdk/core";
 import * as lambda from "@aws-cdk/aws-lambda";
 import * as s3 from "@aws-cdk/aws-s3";
 import * as iam from "@aws-cdk/aws-iam";
-import * as events from "@aws-cdk/aws-events";
-import * as targets from "@aws-cdk/aws-events-targets";
+// import * as events from "@aws-cdk/aws-events";
+// import * as targets from "@aws-cdk/aws-events-targets";
 
-import { RemovalPolicy } from "@aws-cdk/core";
+// import { RemovalPolicy } from "@aws-cdk/core";
 
 interface StageContext {
   bucketName: string;
@@ -17,6 +17,7 @@ export class ExampleCdkLambdaCronStack extends cdk.Stack {
     const env: string = this.node.tryGetContext("env") || "dev";
     const revision: string = this.node.tryGetContext("revision") || "";
     const context: StageContext = this.node.tryGetContext(env) || {};
+
     if (context.bucketName == "") {
       throw new Error(
         `error: invalid context:${JSON.stringify({
@@ -26,7 +27,7 @@ export class ExampleCdkLambdaCronStack extends cdk.Stack {
         })}`
       );
     }
-    const bucket = new s3.Bucket(this, "Bucket", {
+    const bucket = new s3.Bucket(this, "hadaBucket", {
       versioned: false,
       bucketName: context.bucketName,
       publicReadAccess: false,
@@ -49,7 +50,7 @@ export class ExampleCdkLambdaCronStack extends cdk.Stack {
     });
     bucket.addToResourcePolicy(putPolicyStatement);
 
-    const cronLambda = new lambda.Function(this, "cronLambda", {
+    new lambda.Function(this, "hadaLambda", {
       code: lambda.Code.asset("src/lambda/sample"),
       handler: "cron.handler",
       timeout: cdk.Duration.seconds(300),
@@ -59,9 +60,10 @@ export class ExampleCdkLambdaCronStack extends cdk.Stack {
         REVISION: revision
       }
     });
-    const rule = new events.Rule(this, "Rule", {
-      schedule: events.Schedule.expression("cron(0 18 ? * MON-FRI *)")
-    });
-    rule.addTarget(new targets.LambdaFunction(cronLambda));
+
+    // const rule = new events.Rule(this, "Rule", {
+    //   schedule: events.Schedule.expression("cron(0 18 ? * MON-FRI *)")
+    // });
+    // rule.addTarget(new targets.LambdaFunction(cronLambda));
   }
 }

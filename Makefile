@@ -59,23 +59,27 @@ cdk-deploy:.check-env .set-revision
 	cdk deploy --require-approval never \
 		--context env=$(APP_ENV) \
 		--context revision=$(REVISION) \
-		"$(STACK_NAME)-$(APP_ENV)"
+		"$(STACK_NAME)-$(APP_ENV)" \
+		--profile lycle-terraformer
 
 cdk-destroy:.check-env .set-revision
 	cdk destroy --require-approval never \
 		--context env=$(APP_ENV) \
 		--context revision=$(REVISION) \
-		"$(STACK_NAME)-$(APP_ENV)"
+		"$(STACK_NAME)-$(APP_ENV)" \
+		--profile lycle-terraformer
 
 cdk-diff:.check-env .set-revision
 	cdk diff --context env=$(APP_ENV) \
 		--context revision=$(REVISION) \
-		"$(STACK_NAME)-$(APP_ENV)"
+		"$(STACK_NAME)-$(APP_ENV)" \
+		--profile lycle-terraformer
 
 cdk-synth:.check-env .set-revision build
 	cdk synth --context env=$(APP_ENV) \
 		--context revision=$(REVISION) \
-		"$(STACK_NAME)-$(APP_ENV)"
+		"$(STACK_NAME)-$(APP_ENV)" \
+		--profile lycle-terraformer
 
 npm-watch:
 	npm run watch

@@ -1,11 +1,11 @@
 {
   "context": {
     "dev": {
-      "description": "Development Example-CDK",
-      "customDomainName": "",
-      "certificateArn": "",
-      "hostedZoneId": "",
-      "bucketName": ""
+      "description": "Development Example-CDK of hada",
+      "customDomainName": "survey.stg.lycle-line.jp",
+      "certificateArn": "arn:aws:acm:ap-northeast-1:891450488341:certificate/2c14c1ea-53ba-4916-81e3-d6cbbd2f2385",
+      "hostedZoneId": "Z1OT3O1WKY5XCM",
+      "bucketName": "test.lycle-line.hada"
     },
     "stg": {
       "description": "Staging Example-CDK",
